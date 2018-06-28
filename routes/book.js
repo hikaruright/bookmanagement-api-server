@@ -74,40 +74,69 @@ router.post("/",[
 //        console.log(user.fullname);
 //        console.log(user.department);
 
-        var publisherName = db.publisherDb.find({id: publisher}).exec();
+        db.publisherDb.find({id: publisher}).exec(
+            (err, pub) => {
+                db.dptDb.find({id: user.dpt}).exec(
+                    (err2, dpt) => {
+                        console.log(dpt);
 
-        let dt = new Date();
+                        let dt = new Date();
+                
+                        var nowStr = dt.getFullYear()
+                            + "/" + ("00"+(dt.getMonth()+1)).slice(-2)
+                            + "/" + ("00"+dt.getDate()).slice(-2);
+                
+                        if(!id) {
+                            console.log("insert.start.");
+                            db.bookDb.insert({
+                                title: title,
+                                author: author,
+                                publisher: publisher,
+                                publisherName: pub.label,
+                                purchased: purchased,
+                                price: price,
+                                updator: updator,
+                                updatorDpt: dpt.id,
+                                updaterDptName: dpt.label,
+                                updated: nowStr,
+                                updatedTime: dt.getTime()
+                            }, (err, doc) => {
+                                console.log("result....");
+                                res.send({
+                                    result:true,
+                                    id: doc._id
+                                });
+                            });
+                            console.log("flag2");
+                        }else{
 
-        var nowStr = dt.getFullYear()
-            + "/" + ("00"+(dt.getMonth()+1)).slice(-2)
-            + "/" + ("00"+dt.getDate()).slice(-2);
+                            console.log("update start.");
+                            db.bookDb.update({_id:id},{
+                                title: title,
+                                author: author,
+                                publisher: publisher,
+                                publisherName: pub.label,
+                                purchased: purchased,
+                                price: price,
+                                updator: updator,
+                                updatorDpt: dpt.id,
+                                updaterDptName: dpt.label,
+                                updated: nowStr,
+                                updatedTime: dt.getTime()
+                            },{}, (err, num, upserted) => {
+                                if(!err) {
+                                    res.send({
+                                        result: true,
+                                        id: id
+                                    });
+                                }
+                            })
 
-        if(!id) {
-            console.log("insert.start.");
-            db.bookDb.insert({
-                title: title,
-                author: author,
-                publisher: publisher,
-                publisherName: publisherName,
-                purchased: purchased,
-                price: price,
-                updator: updator,
-                updated: nowStr,
-                updatedTime: dt.getTime()
-            }, (err, doc) => {
-                console.log("result....");
-                res.send({
-                    result:true,
-                    id: doc._id
-                });
-            });
-            console.log("flag2");
-        }else{
-            res.send({
-                id: "xxxxx"
-            });
-        }
-
+                        }
+                    }
+                );
+            }
+        );
     })
     
 });

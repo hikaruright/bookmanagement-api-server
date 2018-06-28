@@ -4,13 +4,17 @@ var db = require("./dbmanager")
 
 module.exports = async function(req, res, resolve, reject) {
 
+
+    console.log(req.headers["x-access-token"]);
+    
     var token = req.body.token || req.query.token || req.headers["x-access-token"];
 
     if(!token) {
         res.status(403).send({
             "message": "There is no token. you need login at first."
         });
-        return reject();
+        if(!!reject) reject();
+        return;
     }
     console.log(token);
 
@@ -21,7 +25,9 @@ module.exports = async function(req, res, resolve, reject) {
             res.status(403).send({
                 "message": "There is invalidated token."
             });
-            return reject();
+            if(!!reject) reject();
+            return;
+
         }else {
             resolve(user);
         }
