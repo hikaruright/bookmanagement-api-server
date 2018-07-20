@@ -49,9 +49,12 @@ router.post("/",[
 
     auth(req, res, (user) => {
         // 対象ID
-        var id = req.params.id || req.body.id;
+        let id = req.params.id || req.body.id;
 
-        console.log("register started.");
+        console.log("register started. > "+id);
+
+        console.log("---- Request ----");
+        console.log(req.body);
 
         const errors = validationResult(req);
 
@@ -68,71 +71,72 @@ router.post("/",[
         var publisher = req.body.publisher;
         var price = req.body.price;
         var purchased = req.body.purchased;
+        var managedDpt = req.body.managedDpt;
 
         var updator = (!id) ? user.fullname : req.body.updator;
         // user data
 //        console.log(user.fullname);
 //        console.log(user.department);
 
-        db.publisherDb.find({id: publisher}).exec(
+        db.publisherDb.findOne({id: publisher}).exec(
             (err, pub) => {
-                db.dptDb.find({id: user.dpt}).exec(
+                console.log("pub>>"+pub);
+                db.dptDb.findOne({id: user.department}).exec(
                     (err2, dpt) => {
-                        console.log(dpt);
+                        db.dptDb.findOne({id: managedDpt}).exec((err3, mDpt) => {
+                            console.log(dpt);
 
-                        let dt = new Date();
-                
-                        var nowStr = dt.getFullYear()
-                            + "/" + ("00"+(dt.getMonth()+1)).slice(-2)
-                            + "/" + ("00"+dt.getDate()).slice(-2);
-                
-                        if(!id) {
-                            console.log("insert.start.");
-                            db.bookDb.insert({
+                            let dt = new Date();
+                    
+                            var nowStr = dt.getFullYear()
+                                + "/" + ("00"+(dt.getMonth()+1)).slice(-2)
+                                + "/" + ("00"+dt.getDate()).slice(-2);
+                            
+                            let obj = {
                                 title: title,
                                 author: author,
                                 publisher: publisher,
                                 publisherName: pub.label,
                                 purchased: purchased,
                                 price: price,
+                                managedDpt: mDpt.id,
+                                managedDptName: mDpt.label,
                                 updator: updator,
                                 updatorDpt: dpt.id,
                                 updaterDptName: dpt.label,
                                 updated: nowStr,
                                 updatedTime: dt.getTime()
-                            }, (err, doc) => {
-                                console.log("result....");
-                                res.send({
-                                    result:true,
-                                    id: doc._id
-                                });
-                            });
-                            console.log("flag2");
-                        }else{
+                            };
+                            console.log("---- Registering ----");
+                            console.log(obj);
 
-                            console.log("update start.");
-                            db.bookDb.update({_id:id},{
-                                title: title,
-                                author: author,
-                                publisher: publisher,
-                                publisherName: pub.label,
-                                purchased: purchased,
-                                price: price,
-                                updator: updator,
-                                updatorDpt: dpt.id,
-                                updaterDptName: dpt.label,
-                                updated: nowStr,
-                                updatedTime: dt.getTime()
-                            },{}, (err, num, upserted) => {
-                                if(!err) {
+                            if(!id) {
+                                console.log("insert.start.");
+                                db.bookDb.insert(obj, (err, doc) => {
+                                    console.log("result....");
                                     res.send({
-                                        result: true,
-                                        id: id
+                                        result:true,
+                                        id: doc._id
                                     });
-                                }
-                            })
-
-                        }
+                                });
+                                console.log("flag2");
+                            }else{
+    
+                                console.log("update start.");
+                                db.bookDb.update(
+                                    {_id:id},
+                                    obj,
+                                    {}, (err, num, upserted) => {
+                                    if(!err) {
+                                        res.send({
+                                            result: true,
+                                            id: id
+                                        });
+                                    }
+                                })
+    
+                            }
+                        })
                     }
                 );
             }
