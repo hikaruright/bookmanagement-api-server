@@ -76,4 +76,4 @@ $ npm start
 [{"id":"sample","password":"password","fullname":"佐藤太郎","department":"1001","_id":"kxVWU7hVtpoTs49Q"}]
 ```
 
-このユーザが初期ユーザですので、このidとpasswordを使用してログインします。
+このユーザが初期ユーザですので、このidとpasswordを使用してログインします。
