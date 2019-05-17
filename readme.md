@@ -57,7 +57,7 @@ $ npm install
 
 ## 実行する
 
-npm installを行なったディレクトリ内で以下のコマンドを実行します。
+npm installを行なったディレクトリ内で以下のコマンドを実行します。
 
 ```
 $ npm start
@@ -67,7 +67,7 @@ $ npm start
 
 ブラウザで以下にアクセスします。
 
-[http://localhost:3000/create](http://localhost:3000/create)
+[http://localhost:4300/create](http://localhost:4300/create)
 
 以下のようなJSONファイルを表示したら、
 起動は完了です。

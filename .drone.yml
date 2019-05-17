@@ -1,0 +1,15 @@
+workspace:
+  base: /build
+
+pipeline:
+  docker-build:
+    image: plugins/docker
+    dockerfile: Dockerfile
+    mount:
+      - /build/target
+    settings:
+      repo: hikaruright/bookmanagement-api
+      tags:
+      - latest
+      - 1.0.0
+      - 0.0.1
