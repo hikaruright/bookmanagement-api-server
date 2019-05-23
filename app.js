@@ -13,6 +13,7 @@ var login = require("./routes/login");
 var books = require("./routes/books");
 var book = require("./routes/book");
 var list = require("./routes/list");
+var user = require("./routes/user");
 
 var validator = require("express-validator")
 
@@ -39,6 +40,7 @@ app.use("/login", login)
 app.use("/book", book)
 app.use("/books", books)
 app.use("/list", list)
+app.use("/user", user)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

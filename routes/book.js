@@ -145,4 +145,30 @@ router.post("/",[
     
 });
 
+// Delete
+router.delete("/:id", (req, res) => {
+    // 対象ID
+    let id = req.params.id || req.body.id;
+
+    console.log('delete start to ' + id);
+
+    db.bookDb.remove({_id: id}, (err, numRemoved) => {
+        if (!!err) {
+            console.error(err);
+
+            res.status(422).send({
+                message: 'unexpected error has occoured.'
+            });
+        } else if (!numRemoved) {
+            res.status(422).send({
+                message: 'there is no data id of ' + id + ' .'
+            });
+        } else {
+            res.send({
+                id: id
+            });
+        }
+    });
+});
+
 module.exports = router;

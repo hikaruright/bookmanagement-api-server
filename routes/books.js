@@ -35,10 +35,13 @@ router.get("/", (req, res, next) => {
  */
 router.post("/", (req, res, next) => {
     // 検索処理
-    auth(req, res, () => {
+    auth(req, res, (user) => {
         let title = req.body.title;
         let author = req.body.author;
         let publisher = req.body.publisher;
+        let depFlag = req.body.depFlag;
+
+        console.log(depFlag);
     
         var condition = {};
     
@@ -50,6 +53,9 @@ router.post("/", (req, res, next) => {
         }
         if(!!publisher) {
             condition["publisherName"] = new RegExp(publisher, 'i');
+        }
+        if(depFlag) {
+            condition["managedDpt"] = new RegExp(user.department, 'i');
         }
     
         db.bookDb.find(condition).sort({inserted: -1}).exec((err, docs) => {
