@@ -25,6 +25,7 @@ router.get("/:id", (req, res) => {
         }
 
         //1行目のデータを返却
+        doc.id = doc._id;
         res.send(doc);
 
     });
