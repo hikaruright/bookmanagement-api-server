@@ -74,7 +74,7 @@ router.post("/",[
         var purchased = req.body.purchased;
         var managedDpt = req.body.managedDpt;
 
-        var updator = (!id) ? user.fullname : req.body.updator;
+        var updater = (!id) ? user.fullname : req.body.updater;
         // user data
 //        console.log(user.fullname);
 //        console.log(user.department);
@@ -102,8 +102,8 @@ router.post("/",[
                                 price: price,
                                 managedDpt: mDpt.id,
                                 managedDptName: mDpt.label,
-                                updator: updator,
-                                updatorDpt: dpt.id,
+                                updater: updater,
+                                updaterDpt: dpt.id,
                                 updaterDptName: dpt.label,
                                 updated: nowStr,
                                 updatedTime: dt.getTime()
